@@ -6,6 +6,7 @@ import { RegisterComponent } from './auth/register/register.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { PageNotFoundComponent } from './share/page-not-found/page-not-found.component';
 import { dashboardRoutes } from './dashboard/dashboard.routes';
+import { AuthGuard } from './auth/auth.guard';
 
 const routes: Routes = [
     { path: 'login', component: LoginComponent },
@@ -13,7 +14,8 @@ const routes: Routes = [
     {
         path: '',
         component: DashboardComponent,
-        children: dashboardRoutes
+        children: dashboardRoutes,
+        canActivate: [AuthGuard]
      },
     { path: '**', component: PageNotFoundComponent },
 ];
