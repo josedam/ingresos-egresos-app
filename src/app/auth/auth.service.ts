@@ -15,8 +15,8 @@ import { map } from 'rxjs/operators';
 import { User } from './user.model';
 
 import { ActivarLoadingAction, DesactivarLoadingAction } from '../share/ui.actions';
-import { setUserAction } from './auth.actions';
-import { Subscribable, Subscription } from 'rxjs';
+import { setUserAction, resetUserAction } from './auth.actions';
+import { Subscription } from 'rxjs';
 
 
 @Injectable({
@@ -25,6 +25,7 @@ import { Subscribable, Subscription } from 'rxjs';
 export class AuthService {
 
   private userSubscription: Subscription = new Subscription();
+  private user: User;
 
   constructor( private afAuth: AngularFireAuth,
                private reouter: Router,
@@ -35,19 +36,27 @@ export class AuthService {
     this.userSubscription =  this.afAuth.authState.subscribe( (fbUser: firebase.User) => {
 
       if (fbUser) {
-
         this.afDB.doc(`${fbUser.uid}/usuario`).valueChanges()
           .subscribe((userObj: any) => {
-            const newUser = new User(userObj);
-            this.store.dispatch(setUserAction({user: newUser}));
+            this.user = new User(userObj);
+            this.store.dispatch(setUserAction({user: this.user}));
           });
-      } else {
 
-        this.userSubscription.unsubscribe();
+      } else {
+        this.clearUserData();
       }
     });
   }
 
+  private clearUserData() {
+    this.store.dispatch(resetUserAction());
+    this.user = null;
+  }
+
+  doneAuthListener() {
+    this.userSubscription.unsubscribe();
+    this.clearUserData();
+  }
   crearUsuario( nombre: string, email: string, password: string) {
     this.store.dispatch( new ActivarLoadingAction() );
 
@@ -93,11 +102,12 @@ export class AuthService {
   }
 
   logout() {
-    this.reouter.navigate(['/login']);
     this.afAuth.auth.signOut()
     .catch(error => {
       Swal.fire('Error en LogOut', error.message, 'error');
     });
+    // this.store.dispatch(resetUserAction());
+    this.reouter.navigate(['/login']);
   }
 
   isAuth() {
@@ -110,5 +120,9 @@ export class AuthService {
         return fbUser != null;
       })
     );
+  }
+
+  getUser() {
+    return {... this.user};
   }
 }

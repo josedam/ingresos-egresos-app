@@ -1,7 +1,7 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 
-import {FormsModule} from '@angular/forms';
+import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 
 // FireBase
 import { AngularFireModule } from '@angular/fire';
@@ -13,8 +13,10 @@ import { environment } from '../environments/environment';
 import { StoreModule } from '@ngrx/store';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 
+// Reducers
 import { reducers } from './reducers';
 
+// Components
 import { AppComponent } from './app.component';
 import { LoginComponent } from './auth/login/login.component';
 import { RegisterComponent } from './auth/register/register.component';
@@ -27,6 +29,8 @@ import { SidebarComponent } from './share/sidebar/sidebar.component';
 import { NavbarComponent } from './share/navbar/navbar.component';
 import { PageNotFoundComponent } from './share/page-not-found/page-not-found.component';
 import { AppRoutingModule } from './app-routing.module';
+import { OrdenarPorTipoPipe } from './ingreso-egreso/ordenar-por-tipo.pipe';
+import { NombreUsuarioComponent } from './share/nombre-usuario/nombre-usuario.component';
 
 
 @NgModule({
@@ -41,17 +45,21 @@ import { AppRoutingModule } from './app-routing.module';
     FooterComponent,
     SidebarComponent,
     NavbarComponent,
-    PageNotFoundComponent
+    PageNotFoundComponent,
+    OrdenarPorTipoPipe,
+    NombreUsuarioComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     FormsModule,
+    ReactiveFormsModule,
     AngularFireModule.initializeApp(environment.firebase),
     AngularFirestoreModule, // imports firebase/firestore, only needed for database features
     AngularFireAuthModule,
     StoreModule.forRoot(reducers),
     StoreDevtoolsModule.instrument({ maxAge: 25, logOnly: environment.production }) /* , { metaReducers }) */
+
   ],
   providers: [],
   bootstrap: [AppComponent]
