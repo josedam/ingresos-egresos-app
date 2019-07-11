@@ -3,7 +3,7 @@ import { Store } from '@ngrx/store';
 import { AppState } from 'src/app/reducers';
 import { IngresoEgreso } from '../ingreso-egreso.model';
 import { Subscription } from 'rxjs';
-
+import * as fromIngresoEgreso from '../ingreso-egreso.reducer';
 
 @Component({
   selector: 'app-estadistica',
@@ -24,7 +24,7 @@ export class EstadisticaComponent implements OnInit , OnDestroy{
   // public doughnutChartType: ChartType = 'doughnut';
 
 
-  constructor( private store: Store<AppState>) { }
+  constructor( private store: Store<fromIngresoEgreso.AppState>) { }
 
   ngOnInit() {
     this.ingresoEgresoSubscription = this.store.select('ingresoEgreso')
